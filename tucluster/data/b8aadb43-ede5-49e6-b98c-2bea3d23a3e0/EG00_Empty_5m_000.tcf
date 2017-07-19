@@ -1,0 +1,12 @@
+!*********************************************************************************************************
+! This example model is documented at http://wiki.tuflow.com/
+! Any comments or feedback, please email support@tuflow.com
+!*********************************************************************************************************
+! The .tcf file defines the model simulation parameters and directs input from other data sources.
+!*********************************************************************************************************
+!_________________________________________________________________________________________________________
+! MODEL INITIALISATION COMMANDS  
+Tutorial Model == ON								! This command allows for this model to be simulated without a TUFLOW license
+GIS Format == SHP									! Specify SHP as the output format for all GIS files
+SHP Projection == ..\model\gis\Projection.prj 		! Sets the GIS projection for the TUFLOW Model
+Write Empty GIS Files == ..\model\gis\empty | SHP	! This command creates template MapInfo formatted GIS layers within an 'empty' folder to be used when constructing a TUFLOW model
