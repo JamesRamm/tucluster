@@ -13,9 +13,6 @@ api = application = falcon.API()
 # Connect to the database
 db = connect(**settings['MONGODB'])
 
-# Monitor task events from celery
-events.MonitorThread(app)
-
 # Add the routes
 api.add_route(
     '/models',

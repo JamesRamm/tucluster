@@ -22,7 +22,6 @@ settings['MONGODB'] = {
 from tucluster.app import api, db  # noqa
 
 
-
 def create_zip():
     fname = 'test.tcf'
     with open(fname, 'w') as fobj:
