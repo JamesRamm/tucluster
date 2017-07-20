@@ -1,2 +1,3 @@
+falcon==1.2.0
 -e git+https://github.com/JamesRamm/qflow#egg=qflow
 -e git+https://github.com/JamesRamm/fmdb.git#egg=fmdb
