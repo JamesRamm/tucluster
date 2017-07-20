@@ -12,7 +12,7 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    'falcon=1.2.0'
+    'falcon==1.2.0'
 ]
 
 dependency_links = [
