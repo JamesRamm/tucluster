@@ -15,9 +15,6 @@ HTTP API for managing and running Tuflow models in the cloud or a local HPC clus
      :target: https://pyup.io/repos/github/JamesRamm/tucluster/
      :alt: Updates
 
-
-* Free software: GNU General Public License v3
-
 Features
 --------
 
@@ -69,9 +66,10 @@ Endpoints
 
 - ``/runs``
         - GET: Returns a list of all model runs. A model run represents a single execution of a Tuflow model.
-                It has a link to its model, a control file, the name of the tuflow executable and a task id.
-                The task id can be used to query the status of the run. Upon completion the location of the
-                results, log and check folders are available in the model run.
+        It has a link to its model, a control file, the name of the tuflow executable and a task id.
+        The task id can be used to query the status of the run. Upon completion the location of the
+        results, log and check folders are available in the model run.
+
         - POST: Start a tuflow modelling task. A representation of the created model run is returned. POST body should be json containing:
                 - ``tuflowExe`` - the name of the tuflow executable to use for this run
                 - ``modelName`` - the name of the parent model which supplies the input data
@@ -82,5 +80,9 @@ Endpoints
 
 - ``/tasks/{id}``
         - GET: Retrieve the current status of a task by its task_id. A task is a currently-executing model run
-                and the task id can be retrieved from the model run object.
+        and the task id can be retrieved from the model run object.
 
+Licence
+--------
+
+Tucluster is licensed under the GPLv3
