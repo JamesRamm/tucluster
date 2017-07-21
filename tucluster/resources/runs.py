@@ -27,9 +27,7 @@ class ModelRunCollection(object):
         '''
         doc = json.load(req.bounded_stream)
         try:
-            print('DOC', doc)
             control_file = doc['controlFile']
-            print(control_file)
             model = Model.objects.get(name=doc['modelName'])
             tuflow_exe = doc.get(
                 'tuflowExe', next (iter (settings['TUFLOW_EXES'].values())))

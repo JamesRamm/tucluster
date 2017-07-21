@@ -1,1 +1,1 @@
-from tucluster.resources import models, runs
+from tucluster.resources import models, runs, tasks

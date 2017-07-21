@@ -36,3 +36,8 @@ api.add_route(
     '/runs/{oid}',
     resources.runs.ModelRunItem(ModelRun)
 )
+
+api.add_route(
+    '/tasks/{id}',
+    resources.tasks.TaskDetail()
+)

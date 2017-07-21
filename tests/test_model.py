@@ -95,5 +95,5 @@ class TestMonitoring:
             check_folder='/some/check2/folder'
         ).save()
 
-        response = client.simulate_get('/runs/{}/task'.format(str(run.id)))
+        response = client.simulate_get('/tasks/{}'.format(str(run.task_id)))
         assert response.status == falcon.HTTP_OK
