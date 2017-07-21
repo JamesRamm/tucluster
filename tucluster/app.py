@@ -2,7 +2,7 @@
 import falcon
 from fmdb import connect, Model, ModelRun
 from qflow.celery import app
-from tucluster import resources, events
+from tucluster import resources
 from tucluster.conf import settings
 
 
