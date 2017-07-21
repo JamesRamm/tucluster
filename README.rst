@@ -4,7 +4,7 @@ TuCluster
 
 HTTP API for managing and running Tuflow models in the cloud or a local HPC cluster.
 
-.. note: TuCluster is in early stages of development and not yet ready for production use.
+.. note:: TuCluster is in early stages of development and not yet ready for production use.
         We are working towards a 0.1 release asap!
 
 
