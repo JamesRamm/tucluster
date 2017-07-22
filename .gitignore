@@ -62,3 +62,9 @@ target/
 .python-version
 
 .vscode/
+
+####################
+# Project specific #
+####################
+
+tucluster/data/
