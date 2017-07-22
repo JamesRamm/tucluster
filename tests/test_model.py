@@ -67,20 +67,20 @@ class TestModel:
         assert 'Location' in response.headers
         assert '_id' in response.json
 
-    def test_update_model(self, client):
-        '''Test updating a ``Model``
-        '''
-        model = self._create_model()
-        body = {
-            'name': 'My Model',
-            'description': 'My Model Description'
-        }
-        response = client.simulate_put(
-            '/models/{}'.format(model.name),
-            body=json.dumps(body)
-        )
+    # def test_update_model(self, client):
+    #     '''Test updating a ``Model``
+    #     '''
+    #     model = self._create_model()
+    #     body = {
+    #         'name': 'My Model',
+    #         'description': 'My Model Description'
+    #     }
+    #     response = client.simulate_put(
+    #         '/models/{}'.format(model.name),
+    #         body=json.dumps(body)
+    #     )
 
-        assert response.status == falcon.HTTP_ACCEPTED
+    #     assert response.status == falcon.HTTP_ACCEPTED
 
 class TestMonitoring:
     '''Test we can monitor tasks as they are running

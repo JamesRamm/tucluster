@@ -1,9 +1,12 @@
 import uuid
 import json
 import os
+import pathlib
 import falcon
 from falcon import testing
 from fmdb import Model, ModelRun
+from fmdb.serializers import directory_tree_serializer
+from tucluster.conf import settings
 from .fixtures import client
 
 
@@ -12,11 +15,12 @@ class TestModelRun:
     '''
     def _create_modelrun(self):
         name = str(uuid.uuid4())
+        direct = settings['TUFLOW_DATA']
         return ModelRun(
             control_file='{}.tcf'.format(name),
-            result_folder='/{}/result/folder'.format(name),
-            log_folder='/{}/log/folder'.format(name),
-            check_folder='/{}/check/folder'.format(name)
+            result_folder='{}/{}/result'.format(direct, name),
+            log_folder='{}/{}/log'.format(direct, name),
+            check_folder='{}/{}/check'.format(direct, name)
         ).save()
 
 
@@ -72,3 +76,53 @@ class TestModelRun:
         response = client.simulate_get('/runs/{}'.format(str(run.id)))
         assert response.text == run.to_json()
         assert response.status == falcon.HTTP_OK
+
+
+    def _touch_files(self, path):
+        '''Create the given folder and put some random files/folders in it
+        For testing directory tree endpoints
+        '''
+        try:
+            os.makedirs(path)
+        except FileExistsError:
+            pass
+        dirpth = pathlib.Path(path)
+        (dirpth / 'file.txt').touch()
+        (dirpth / 'file2.txt').touch()
+        subdir = dirpth / 'subdir'
+        subdir.mkdir()
+        (subdir / 'file1.txt').touch()
+
+    def _test_get_folder_tree(self, client, folder):
+
+        run = self._create_modelrun()
+        if folder == 'results':
+            path = run.result_folder
+        elif folder == 'check':
+            path = run.check_folder
+        elif folder == 'log':
+            path = run.log_folder
+
+        # Make the result folder and put some stuff in it
+        # to test the API against
+        self._touch_files(path)
+        response = client.simulate_get('/runs/{}/{}'.format(str(run.id), folder))
+        assert response.status == falcon.HTTP_OK
+        assert response.text == directory_tree_serializer(path)
+
+    def test_get_result_tree(self, client):
+        '''The API can return the result directory tree for a model run
+        '''
+        self._test_get_folder_tree(client, 'results')
+
+    def test_get_check_tree(self, client):
+        '''The API can return the result directory tree for a model run
+        '''
+        self._test_get_folder_tree(client, 'check')
+
+    def test_get_log_tree(self, client):
+        '''The API can return the result directory tree for a model run
+        '''
+        self._test_get_folder_tree(client, 'log')
+
+
