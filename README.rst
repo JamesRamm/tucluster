@@ -11,6 +11,10 @@ HTTP API for managing and running Tuflow models in the cloud or a local HPC clus
 .. image:: https://img.shields.io/travis/JamesRamm/tucluster.svg
         :target: https://travis-ci.org/JamesRamm/tucluster
 
+.. image:: https://codecov.io/gh/JamesRamm/tucluster/branch/master/graph/badge.svg
+        :target: https://codecov.io/gh/JamesRamm/tucluster
+
+
 .. image:: https://pyup.io/repos/github/JamesRamm/tucluster/shield.svg
      :target: https://pyup.io/repos/github/JamesRamm/tucluster/
      :alt: Updates

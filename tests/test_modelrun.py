@@ -136,4 +136,5 @@ class TestModelRun:
         fpath = next(x for x in dirpath.iterdir() if x.is_file())
 
         # Create the download request
+        print('PATH', '/runs/{}/results/{}'.format(run.id, fpath))
         response = client.simulate_get('/runs/{}/results/{}'.format(run.id, fpath))

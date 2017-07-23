@@ -16,16 +16,16 @@ requirements = [
 ]
 
 dependency_links = [
-    '-e git+https://github.com/JamesRamm/qflow#egg=qflow',
-    '-e git+https://github.com/JamesRamm/fmdb.git#egg=fmdb'
+    'git+https://github.com/JamesRamm/qflow#egg=qflow',
+    'git+https://github.com/JamesRamm/fmdb.git#egg=fmdb'
 ]
 
 setup_requirements = [
-    # TODO(JamesRamm): put setup requirements (distutils extensions, etc.) here
+    'pytest-runner'
 ]
 
 test_requirements = [
-    # TODO: put package test requirements here
+    'pytest'
 ]
 
 setup(
