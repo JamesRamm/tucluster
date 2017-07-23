@@ -26,12 +26,12 @@ Features
 - Basic validation of control files
 - Persists model metadata in mongodb allowing management and searching of all your modelling activities
 - Poll running models for their status
+- Explore and download result data
 
 Future
 ------
 This API is very young and we have many ideas for expanding. Here is a rough roadmap of what we would like to achieve:
 
-- Result exploration and data download (obviously a priority and being worked on right now!)
 - Update models with new input data and re-run
 - User accounts
 - Email on result/failure
@@ -42,6 +42,7 @@ The following are ideas for tucluster which may be moved to other projects/their
 
 - Automatic discovery, download and management of DTM data. This will negate the need for expensive data uploads from the client
 - Tiling of results for web maps
+- Other visualisation of results & inputs
 - Stitching results to a coherent raster based on a search area
 - Realtime monitoring via websockets. (To be shunted over to the client side front-end project)
 
