@@ -92,6 +92,7 @@ class TestModelRun:
         subdir = dirpth / 'subdir'
         subdir.mkdir()
         (subdir / 'file1.txt').touch()
+        return dirpth
 
     def _test_get_folder_tree(self, client, folder):
 
@@ -125,4 +126,14 @@ class TestModelRun:
         '''
         self._test_get_folder_tree(client, 'log')
 
+    def test_get_file(self, client):
+        '''Test we can download a result file
+        '''
+        run = self._create_modelrun()
+        dirpath = self._touch_files(run.result_folder)
 
+        # Get the path to the first file in the directory
+        fpath = next(x for x in dirpath.iterdir() if x.is_file())
+
+        # Create the download request
+        response = client.simulate_get('/runs/{}/results/{}'.format(run.id, fpath))
