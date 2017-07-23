@@ -30,7 +30,7 @@ class ModelRunCollection(object):
             control_file = doc['controlFile']
             model = Model.objects.get(name=doc['modelName'])
             tuflow_exe = doc.get(
-                'tuflowExe', next (iter (settings['TUFLOW_EXES'].values())))
+                'tuflowExe', next(iter(settings['TUFLOW_EXES'].values())))
             mock = doc.get('mock', False)
 
             # Start the task
