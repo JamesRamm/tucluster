@@ -5,9 +5,23 @@ import pathlib
 import falcon
 from falcon import testing
 from fmdb import Model, ModelRun
-from fmdb.serializers import directory_tree_serializer
+from fmdb.serializers import directory_tree_serializer, id_from_path
 from tucluster.conf import settings
+from tucluster.resources.files import FileItem
 from .fixtures import client
+
+class FileWrapper(object):
+
+    def __init__(self, file_like, block_size=8192):
+        self.file_like = file_like
+        self.block_size = block_size
+
+    def __getitem__(self, key):
+        data = self.file_like.read(self.block_size)
+        if data:
+            return data
+
+        raise IndexError
 
 
 class TestModelRun:
@@ -129,12 +143,19 @@ class TestModelRun:
     def test_get_file(self, client):
         '''Test we can download a result file
         '''
+        resource = FileItem(None)
         run = self._create_modelrun()
         dirpath = self._touch_files(run.result_folder)
-
         # Get the path to the first file in the directory
         fpath = next(x for x in dirpath.iterdir() if x.is_file())
 
+        # Use same encoding fmdb does to represent a file
+        fid = id_from_path(str(fpath))
+
         # Create the download request
-        print('PATH', '/runs/{}/results/{}'.format(run.id, fpath))
-        response = client.simulate_get('/runs/{}/results/{}'.format(run.id, fpath))
+        response = client.simulate_get('/files/{}'.format(fid))
+        assert response.status == falcon.HTTP_OK
+        # expected_len = resource.resp.stream_len
+        # actual_len = int(response.headers['content-length'])
+        # assert actual_len == expected_len
+        # assert len(response.content) == expected_len

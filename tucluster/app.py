@@ -13,11 +13,13 @@ api = application = falcon.API()
 # Connect to the database
 db = connect(**settings['MONGODB'])
 
+data_store = resources.utils.DataStore(settings['TUFLOW_DATA'])
+
 # Add the routes
 api.add_route(
     '/models',
     resources.models.ModelCollection(
-        resources.models.ArchiveStore(settings['TUFLOW_DATA']),
+        data_store,
         Model
     )
 )
@@ -45,4 +47,9 @@ api.add_route(
 api.add_route(
     '/tasks/{id}',
     resources.tasks.TaskDetail()
+)
+
+api.add_route(
+    '/files/{fid}',
+    resources.files.FileItem(data_store)
 )
