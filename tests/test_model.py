@@ -3,7 +3,6 @@
 import os
 import uuid
 import zipfile
-import json
 import falcon
 from falcon import testing
 from fmdb import Model, ModelRun
@@ -90,9 +89,6 @@ class TestMonitoring:
         '''
         run = ModelRun(
             control_file='control2.tcf',
-            result_folder='/some/result2/folder',
-            log_folder='/some/log2/folder',
-            check_folder='/some/check2/folder'
         ).save()
 
         response = client.simulate_get('/tasks/{}'.format(str(run.task_id)))

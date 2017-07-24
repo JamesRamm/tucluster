@@ -4,7 +4,6 @@ import falcon
 class ModelCollection(object):
     '''List and create ``Model`` documents
     '''
-
     def __init__(self, archive_store, model_document):
         # Instance supporting `save()` which will handle writing
         # incoming zip data streams to disk

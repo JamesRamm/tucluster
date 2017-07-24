@@ -35,7 +35,7 @@ class ModelRunCollection(object):
 
             # Start the task
             task = tasks.run_tuflow.delay(
-                os.path.join(model.folder, control_file),
+                os.path.join(model.resolve_folder(), control_file),
                 tuflow_exe,
                 mock=mock
             )
@@ -63,4 +63,4 @@ class ModelRunItem(ModelRunCollection):
         resp.status = falcon.HTTP_200
 
     def on_post(self, req, resp, oid):
-        resp.status = falcon.HTTP_NOT_ALLOWED
+        resp.status = falcon.HTTP_400

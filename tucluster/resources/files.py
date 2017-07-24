@@ -1,8 +1,8 @@
 '''HTTP interface to user uploaded files and model result files
 '''
 import falcon
-
 from fmdb import serializers
+
 
 class FileItem(object):
 
@@ -27,7 +27,9 @@ class FileItem(object):
 
 
 class Tree(FileItem):
-
+    '''Serialize a directory tree.
+    This is used to explore results folders, uploaded input folders etc.
+    '''
     def on_get(self, req, resp, fid):
         ''' Return a representation of the directory tree.
 
@@ -41,8 +43,3 @@ class Tree(FileItem):
         except PermissionError as error:
             resp.status = falcon.HTTP_BAD_REQUEST
             resp.body = str(error)
-
-
-
-
-

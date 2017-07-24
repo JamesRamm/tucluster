@@ -50,6 +50,6 @@ api.add_route(
 )
 
 api.add_route(
-    '/tree/{fid}',
+    '/files/tree/{fid}',
     resources.files.Tree(data_store)
 )
