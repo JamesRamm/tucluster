@@ -64,23 +64,3 @@ class ModelRunItem(ModelRunCollection):
 
     def on_post(self, req, resp, oid):
         resp.status = falcon.HTTP_NOT_ALLOWED
-
-
-class ModelRunResultTree(ModelRunItem):
-
-    def on_get(self, req, resp, oid, folder):
-
-        if folder not in {'results', 'check', 'log'}:
-            resp.body = 'Folder must be either results, check or log'
-            resp.status = falcon.HTTP_BAD_REQUEST
-        else:
-            doc = self._document.objects.get(id=oid)
-            if folder == 'results':
-                path = doc.result_folder
-            elif folder == 'check':
-                path = doc.check_folder
-            else:
-                path = doc.log_folder
-
-            resp.status = falcon.HTTP_OK
-            resp.body = serializers.directory_tree_serializer(path)

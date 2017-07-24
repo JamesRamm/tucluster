@@ -45,6 +45,15 @@ class DataStore(object):
     def open(self, fid):
         '''Open the file path given by its' fid and return the stream
         '''
+        filepath = self.validate_fid(fid)
+
+        stream = self._fopen(filepath, 'rb')
+        stream_len = os.path.getsize(filepath)
+        content_type = mimetypes.guess_type(filepath)[0]
+
+        return stream, stream_len, content_type
+
+    def validate_fid(self, fid):
         # decode the file id
         filepath = fmdb.path_from_id(fid)
 
@@ -53,8 +62,4 @@ class DataStore(object):
         if self._storage_path not in filepath:
             raise PermissionError('You do not have permission to access this file')
 
-        stream = self._fopen(filepath, 'rb')
-        stream_len = os.path.getsize(filepath)
-        content_type = mimetypes.guess_type(filepath)[0]
-
-        return stream, stream_len, content_type
+        return filepath

@@ -40,11 +40,6 @@ api.add_route(
 )
 
 api.add_route(
-    '/runs/{oid}/{folder}',
-    resources.runs.ModelRunResultTree(ModelRun)
-)
-
-api.add_route(
     '/tasks/{id}',
     resources.tasks.TaskDetail()
 )
@@ -52,4 +47,9 @@ api.add_route(
 api.add_route(
     '/files/{fid}',
     resources.files.FileItem(data_store)
+)
+
+api.add_route(
+    '/tree/{fid}',
+    resources.files.Tree(data_store)
 )

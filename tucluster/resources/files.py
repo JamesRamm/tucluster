@@ -2,6 +2,8 @@
 '''
 import falcon
 
+from fmdb import serializers
+
 class FileItem(object):
 
     def __init__(self, data_store):
@@ -22,3 +24,25 @@ class FileItem(object):
         except PermissionError as error:
             resp.status = falcon.HTTP_BAD_REQUEST
             resp.body = str(error)
+
+
+class Tree(FileItem):
+
+    def on_get(self, req, resp, fid):
+        ''' Return a representation of the directory tree.
+
+        Args:
+            fid (str): the base64 encoded url safe ID for the path to the root folder
+        '''
+        try:
+            self._data_store.validate_fid(fid)
+            resp.status = falcon.HTTP_OK
+            resp.body = serializers.directory_tree_serializer(fid)
+        except PermissionError as error:
+            resp.status = falcon.HTTP_BAD_REQUEST
+            resp.body = str(error)
+
+
+
+
+

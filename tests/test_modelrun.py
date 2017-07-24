@@ -108,46 +108,23 @@ class TestModelRun:
         (subdir / 'file1.txt').touch()
         return dirpth
 
-    def _test_get_folder_tree(self, client, folder):
+    def test_get_folder_tree(self, client):
+        '''Test we can serialize a directory tree structure
+        '''
+        # Get path within designated storage directory
+        fid = id_from_path(settings['TUFLOW_DATA'])
 
-        run = self._create_modelrun()
-        if folder == 'results':
-            path = run.result_folder
-        elif folder == 'check':
-            path = run.check_folder
-        elif folder == 'log':
-            path = run.log_folder
-
-        # Make the result folder and put some stuff in it
-        # to test the API against
-        self._touch_files(path)
-        response = client.simulate_get('/runs/{}/{}'.format(str(run.id), folder))
+        response = client.simulate_get('/tree/{}'.format(fid))
         assert response.status == falcon.HTTP_OK
-        assert response.text == directory_tree_serializer(path)
-
-    def test_get_result_tree(self, client):
-        '''The API can return the result directory tree for a model run
-        '''
-        self._test_get_folder_tree(client, 'results')
-
-    def test_get_check_tree(self, client):
-        '''The API can return the result directory tree for a model run
-        '''
-        self._test_get_folder_tree(client, 'check')
-
-    def test_get_log_tree(self, client):
-        '''The API can return the result directory tree for a model run
-        '''
-        self._test_get_folder_tree(client, 'log')
+        assert response.text == directory_tree_serializer(fid)
 
     def test_get_file(self, client):
         '''Test we can download a result file
         '''
-        resource = FileItem(None)
-        run = self._create_modelrun()
-        dirpath = self._touch_files(run.result_folder)
-        # Get the path to the first file in the directory
-        fpath = next(x for x in dirpath.iterdir() if x.is_file())
+        # Create a file in the storage path
+        dirpth = pathlib.Path(settings['TUFLOW_DATA'])
+        fpath = dirpth / 'test.txt'
+        fpath.touch()
 
         # Use same encoding fmdb does to represent a file
         fid = id_from_path(str(fpath))
@@ -155,7 +132,21 @@ class TestModelRun:
         # Create the download request
         response = client.simulate_get('/files/{}'.format(fid))
         assert response.status == falcon.HTTP_OK
-        # expected_len = resource.resp.stream_len
-        # actual_len = int(response.headers['content-length'])
-        # assert actual_len == expected_len
-        # assert len(response.content) == expected_len
+
+    def test_fail_folder_tree(self, client):
+        '''Test we are not allowed to access folders
+        outside the allowed storage
+        '''
+        restricted_path = os.path.dirname(__file__)
+        fid = id_from_path(restricted_path)
+        response = client.simulate_get('/tree/{}'.format(fid))
+        assert response.status == falcon.HTTP_BAD_REQUEST
+
+    def test_fail_file(self, client):
+        '''Test we are not allowed to access files
+        outside the allowed storage
+        '''
+        restricted_path = os.path.abspath(__file__)
+        fid = id_from_path(restricted_path)
+        response = client.simulate_get('/files/{}'.format(fid))
+        assert response.status == falcon.HTTP_BAD_REQUEST
