@@ -60,16 +60,16 @@ You can now interact with the API using e.g. HTTPie
 Endpoints
 ---------
 
-- ``/models``
+:``/models``:
         - GET: Returns a list of all models that have been created. A model has a name, description and a folder containing all tuflow model input files
         - POST: Upload a single zip archive containing all model data. TCF files must be in the root directory. Returns a representation of the
-                created model.
+        created model.
 
-- ``/models/{name}``
+:``/models/{name}``:
         - GET: Retrieve a representation of single model by its name
-        - PUT: Update the ``name`` and ``description`` of a single model.
+        - PATCH: Update the ``name``, ``description`` and ``email`` (user) of a single model.
 
-- ``/runs``
+:``/runs``:
         - GET: Returns a list of all model runs. A model run represents a single execution of a Tuflow model.
         It has a link to its model, a control file, the name of the tuflow executable and a task id.
         The task id can be used to query the status of the run. Upon completion the location of the
@@ -80,14 +80,25 @@ Endpoints
                 - ``modelName`` - the name of the parent model which supplies the input data
                 - ``controlFile`` - the path to the control file to use for this run (taken from the parent model)
 
-- ``/runs/{oid}``
+:``/runs/{oid}``:
         - GET: Retrieve a representation of a single model run by its' ID.
 
-- ``/tasks/{id}``
+:``/tasks/{id}``:
         - GET: Retrieve the current status of a task by its task_id. A task is a currently-executing model run
         and the task id can be retrieved from the model run object.
+
+:``/files/{fid}``:
+        - GET: Download a file by its FID. The FID is the url-safe base64 encoding of the file path.
+        Such encodings are returned when retrieving a directory tree representation.
+
+:``/files/tree/{fid}``:
+        - GET: Get a JSON representation of the directory tree structure given by the folder
+        path described by ``fid``. This is a url-safe base64 encoding of a folder path as can be
+        retrieved from a successful task result (for output folders) or a model, which returns the
+        input folder location as a fid.
+
 
 Licence
 --------
 
-Tucluster is licensed under the GPLv3
+Tucluster is free and open source software licensed under GPLv3.
