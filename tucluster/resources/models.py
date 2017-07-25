@@ -1,3 +1,4 @@
+import json
 import falcon
 
 
@@ -70,6 +71,14 @@ class ModelItem(object):
         # resource
         self._document = model_document
 
+    def get_object(self, name):
+        try:
+            return self._document.objects.get(name=name)
+        except self._document.DoesNotExist:
+            raise falcon.HTTPBadRequest(
+                description="A model with the name {} does not exist".format(name)
+            )
+
     def on_get(self, req, resp, name):
         '''Retrieve a JSON representation of a single ``Model`` based on its'
         name.
@@ -78,6 +87,28 @@ class ModelItem(object):
 
             http localhost:8000/model/{name}
         '''
-        model = self._document.objects.get(name=name)
+        model = self.get_object(name)
         resp.status = falcon.HTTP_OK
         resp.body = model.to_json()
+
+    def on_patch(self, req, resp, name):
+        '''Update a ``Model`` instance with new data.
+
+        Data is submitted as a JSON object. Any of the following attributes are accepted:
+
+        - ``description``: A new description of the model
+        - ``name``: A new name for the model
+        - ``email``: Email address of an existing user to transfer ownership
+            of the model to.
+
+        '''
+        model = self.get_object(name)
+        data = json.load(req.bounded_stream)
+        if 'description' in data:
+            model.description = data['description']
+        if 'name' in data:
+            model.name = data['name']
+        if 'email' in data:
+            model.set_user(data['email'])
+        model.save()
+        resp.status = falcon.HTTP_NO_CONTENT
