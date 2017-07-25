@@ -9,7 +9,9 @@ from qflow.utils import extract_model, ensure_dir
 
 
 class DataStore(object):
-    '''Save and extract a zip file from a stream
+    '''Data storage and retrieval for all user uploaded files.
+    An instance of ``DataStore`` is the interface to the location of all modelling
+    inputs and results.
     '''
     _CHUNK_SIZE_BYTES = 4096
 
@@ -54,6 +56,28 @@ class DataStore(object):
         return stream, stream_len, content_type
 
     def validate_fid(self, fid):
+        '''Validate a url-safe base64 encoding of a file or folder path on the server.
+
+        This ensures only paths within the configured storage location are
+        accessible.
+
+        Args:
+
+            fid (str): URL-safe base64 encoding of a filepath. A HTTP client typically
+            would not encode the path itself, but retrieve fids' for valid file paths
+            from other tucluster endpoints. For example, the ``/models`` endpoint will
+            return a list of ``Model`` representations, each having a ``folder`` attribute
+            which is the encoded folder path to where the input data is stored.
+
+        Returns:
+
+            str: The decoded file/folder path if FID was valid.
+
+        Raises:
+
+            PermissionError: Raise if the FID is invalid. I.e the decoded path lies outside
+            the configured storage location
+        '''
         # decode the file id
         filepath = fmdb.path_from_id(fid)
 

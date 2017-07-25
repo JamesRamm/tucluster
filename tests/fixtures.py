@@ -12,11 +12,11 @@ def client():
     # Make sure the data directory exists
     # before we start making test files in it
     try:
-        os.makedirs(settings['TUFLOW_DATA'])
+        os.makedirs(settings['MODEL_DATA_DIR'])
     except:
         pass
     yield testing.TestClient(api)
     # Remove the data directory after testing
-    shutil.rmtree(settings['TUFLOW_DATA'])
+    shutil.rmtree(settings['MODEL_DATA_DIR'])
     # Drop the test database
     db.drop_database("mongoenginetest")

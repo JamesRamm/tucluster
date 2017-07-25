@@ -1,3 +1,9 @@
+'''Get the tucluster configuration.
+
+The default configuration is suitable for development and may
+be overriden by specifying an environment variable - ``TUCLUSTER_CONFIG``
+which points to a JSON file.
+'''
 import json
 import os
 
@@ -8,7 +14,7 @@ __DEFAULTS = {
         "host": "127.0.0.1",
         "port": 27017
     },
-    "TUFLOW_DATA": os.path.join(os.path.dirname(__file__), 'data'),
+    "MODEL_DATA_DIR": os.path.join(os.path.dirname(__file__), 'data'),
     "TUFLOW_EXES": {
         'Tuflow Classic': 'tuflow',
     }

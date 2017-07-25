@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import falcon
 from fmdb import connect, Model, ModelRun
+
+# Import the celery app to ensure it is initialised when we start the server
 from qflow.celery import app
 from tucluster import resources
 from tucluster.conf import settings
-
 
 # Create the WSGI application. It is aliased to ``application``
 # as this is what gunicorn expects.
@@ -13,7 +14,9 @@ api = application = falcon.API()
 # Connect to the database
 db = connect(**settings['MONGODB'])
 
-data_store = resources.utils.DataStore(settings['TUFLOW_DATA'])
+# The data store encapsulates saving and retrieving files from
+# the configured storage location and is used by various resources
+data_store = resources.utils.DataStore(settings['MODEL_DATA_DIR'])
 
 # Add the routes
 api.add_route(

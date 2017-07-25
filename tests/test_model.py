@@ -15,7 +15,7 @@ def create_zip():
     fname = 'test.tcf'
     with open(fname, 'w') as fobj:
         fobj.write("RANDOM STATEMENT == RANDOM")
-    path = os.path.join(settings['TUFLOW_DATA'], "{}.zip".format(uuid.uuid4()))
+    path = os.path.join(settings['MODEL_DATA_DIR'], "{}.zip".format(uuid.uuid4()))
     with zipfile.ZipFile(path, mode='w') as zfile:
         zfile.write(fname)
     os.remove(fname)
