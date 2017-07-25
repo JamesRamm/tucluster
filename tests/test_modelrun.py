@@ -15,7 +15,7 @@ class TestModelRun:
     '''
     def _create_modelrun(self):
         name = str(uuid.uuid4())
-        direct = settings['TUFLOW_DATA']
+        direct = settings['MODEL_DATA_DIR']
         return ModelRun(
             control_file='{}.tcf'.format(name),
         ).save()

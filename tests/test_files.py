@@ -30,7 +30,7 @@ class TestFiles:
         '''Test we can serialize a directory tree structure
         '''
         # Get path within designated storage directory
-        fid = id_from_path(settings['TUFLOW_DATA'])
+        fid = id_from_path(settings['MODEL_DATA_DIR'])
 
         response = client.simulate_get('/files/tree/{}'.format(fid))
         assert response.status == falcon.HTTP_OK
@@ -40,7 +40,7 @@ class TestFiles:
         '''Test we can download a result file
         '''
         # Create a file in the storage path
-        dirpth = pathlib.Path(settings['TUFLOW_DATA'])
+        dirpth = pathlib.Path(settings['MODEL_DATA_DIR'])
         fpath = dirpth / 'test.txt'
         fpath.touch()
 
