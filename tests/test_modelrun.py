@@ -73,3 +73,16 @@ class TestModelRun:
         response = client.simulate_get('/runs/{}'.format(str(run.id)))
         assert response.text == run.to_json()
         assert response.status == falcon.HTTP_OK
+
+    def test_patch_run(self, client):
+        '''The API will update a model run to set it as the
+        baseline model.
+        '''
+        run = self._create_modelrun()
+        response = client.simulate_patch(
+            '/runs/{}'.format(str(run.id)),
+            body=json.dumps({
+                'isBaseline': True
+            })
+        )
+        assert response.status == falcon.HTTP_ACCEPTED

@@ -125,3 +125,11 @@ class ModelRunItem(ModelRunCollection):
 
     def on_post(self, req, resp, oid):
         resp.status = falcon.HTTP_400
+
+    def on_patch(self, req, resp, oid):
+
+        doc = self._document.objects.get(id=oid)
+        data = json.load(req.bounded_stream)
+        doc.is_baseline = data['isBaseline']
+        doc.save()
+        resp.status = falcon.HTTP_ACCEPTED
