@@ -98,6 +98,9 @@ Endpoints
         retrieved from a successful task result (for output folders) or a model, which returns the
         input folder location as a fid.
 
+:``/users``:
+        - GET: Returns a list of all users that have been created. A user is represented by an email address.
+        - POST: Create a new user by submitting an email address.
 
 Licence
 --------

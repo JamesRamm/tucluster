@@ -11,6 +11,9 @@ Typical Workflow
 
 When using TuCluster, you will typically follow a workflow similar to the following:
 
+- Do a one-time only registration of a bunch of users. This will allow you to set the user
+for each model.
+
 - Prepare an input zip folder. This is all the modelling input data and control files. Note that
 the control files should be in the root zip archive.
 
