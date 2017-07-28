@@ -2,7 +2,7 @@
 TuCluster
 =========
 
-HTTP API for managing and running Tuflow models in the cloud or a local HPC cluster.
+HTTP API for managing and running Anuga and Tuflow models in the cloud or a local HPC cluster.
 
 .. note:: TuCluster is in early stages of development and not yet ready for production use.
         We are working towards a 0.1 release asap!
@@ -22,11 +22,12 @@ HTTP API for managing and running Tuflow models in the cloud or a local HPC clus
 Features
 --------
 
-- Upload Tuflow model data and queue models for execution across multiple workers
-- Basic validation of control files
+- Upload Anuga or Tuflow model data and queue models for execution across multiple workers
+- Basic validation of (tuflow) control files
 - Persists model metadata in mongodb allowing management and searching of all your modelling activities
 - Poll running models for their status
 - Explore and download result data
+- Compare modelling engines by creating a single model with runs for both Anuga and Tuflow
 
 Future
 ------
@@ -40,12 +41,14 @@ This API is very young and we have many ideas for expanding. Here is a rough roa
 
 The following are ideas for tucluster which may be moved to other projects/their own projects:
 
+- A simple command line client
+- Online editing of anuga scripts and tuflow control files, aswell as GIS inputs (A browser based client)
 - Automatic discovery, download and management of DTM data. This will negate the need for expensive data uploads from the client
 - Tiling of results for web maps
 - Other visualisation of results & inputs
 - Stitching results to a coherent raster based on a search area
 - Realtime monitoring via websockets. (To be shunted over to the client side front-end project)
-- Supporting other flood modelling software such as ANUGA Hydro.
+
 
 If you have any other feature ideas, please raise an issue.
 
