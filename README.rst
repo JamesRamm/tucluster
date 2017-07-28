@@ -14,6 +14,9 @@ HTTP API for managing and running Anuga and Tuflow models in the cloud or a loca
 .. image:: https://codecov.io/gh/JamesRamm/tucluster/branch/master/graph/badge.svg
         :target: https://codecov.io/gh/JamesRamm/tucluster
 
+.. image:: https://readthedocs.org/projects/tucluster/badge/?version=latest
+        :target: http://tucluster.readthedocs.io/en/latest/?badge=latest
+        :alt: Documentation Status
 
 .. image:: https://pyup.io/repos/github/JamesRamm/tucluster/shield.svg
      :target: https://pyup.io/repos/github/JamesRamm/tucluster/
