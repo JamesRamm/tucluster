@@ -96,7 +96,7 @@ class TestMonitoring:
         '''Test we can get the status of a task for a model run
         '''
         run = ModelRun(
-            control_file='control2.tcf',
+            entry_point='control2.tcf',
         ).save()
 
         response = client.simulate_get('/tasks/{}'.format(str(run.task_id)))

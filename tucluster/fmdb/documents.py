@@ -43,7 +43,7 @@ class Model(Document):
     description = StringField()
     date_created = DateTimeField(default=datetime.datetime.now)
     folder = StringField()
-    control_files = ListField(StringField())
+    entry_points = ListField(StringField())
     tuflow_exe = StringField()
 
     meta = {
@@ -58,12 +58,12 @@ class Model(Document):
             # Gather all the files which have been uploaded to provide
             # record of initial state of the model folder
             fnames = [
-                name for name in os.listdir(self.folder) if name.endswith('.tcf')
+                name for name in os.listdir(self.folder) if name.endswith(('.tcf', '.py'))
             ]
 
             # Ensure folder is a base64 id rather than a path
             self.folder = id_from_path(self.folder)
-            self.control_files = fnames
+            self.entry_points = fnames
 
     def resolve_folder(self):
         return path_from_id(self.folder)
@@ -71,7 +71,7 @@ class Model(Document):
 
 class ModelRun(Document):
 
-    control_file = StringField(required=True)
+    entry_point = StringField(required=True)
     time_started = DateTimeField()
     task_id = StringField()
     # Is this run the baseline/reference model?

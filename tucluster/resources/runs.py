@@ -22,7 +22,7 @@ class ModelRunCollection(object):
 
         A ``ModelRun`` has the following attributes:
 
-        - ``control_file``: The tuflow control file used in this run.
+        - ``entry_point``: The tuflow control file used in this run.
         - ``task_id``: The ID of the asynchronous task where the modelling program (tuflow)
             is being executed. This id can be used to inspect the task results by passing it
             to the ``/tasks/{id}`` endpoint.
@@ -77,7 +77,7 @@ class ModelRunCollection(object):
         '''
         doc = json.load(req.bounded_stream)
         try:
-            control_file = doc['controlFile']
+            entry_point = doc['controlFile']
             model = Model.objects.get(name=doc['modelName'])
             tuflow_exe = doc.get(
                 'tuflowExe', next(iter(settings['TUFLOW_EXES'].values())))
@@ -85,14 +85,14 @@ class ModelRunCollection(object):
 
             # Start the task
             task = tasks.run_tuflow.delay(
-                os.path.join(model.resolve_folder(), control_file),
+                os.path.join(model.resolve_folder(), entry_point),
                 tuflow_exe,
                 mock=mock
             )
 
             # Create the model run
             run = self._document(
-                control_file=control_file,
+                entry_point=entry_point,
                 task_id=task.id,
                 model=model
             ).save()

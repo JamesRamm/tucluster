@@ -17,7 +17,7 @@ class TestModelRun:
         name = str(uuid.uuid4())
         direct = settings['MODEL_DATA_DIR']
         return ModelRun(
-            control_file='{}.tcf'.format(name),
+            entry_point='{}.tcf'.format(name),
         ).save()
 
 
@@ -27,7 +27,7 @@ class TestModelRun:
         '''
         model = Model(
             name=str(uuid.uuid4()),
-            control_files=['test1.tcf', 'test2.tcf'],
+            entry_points=['test1.tcf', 'test2.tcf'],
             folder=os.path.dirname(__file__)
         ).save()
         body = {
