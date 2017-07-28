@@ -1,2 +1,3 @@
 falcon==1.2.0
+mongoengine==0.13.0
 -e git+https://github.com/JamesRamm/qflow#egg=qflow
