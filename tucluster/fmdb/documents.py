@@ -29,7 +29,6 @@ from mongoengine import (
     ReferenceField,
     PolygonField,
     EmailField,
-    DoesNotExist,
     CASCADE
 )
 from tucluster.fmdb.serializers import id_from_path, path_from_id
@@ -80,7 +79,10 @@ class Model(Document):
 
 class ModelRun(Document):
 
-    entry_point = StringField(required=True, help_text="File to be used as the entry point for Anuga/Tuflow")
+    entry_point = StringField(
+        required=True,
+        help_text="File to be used as the entry point for Anuga/Tuflow"
+    )
     time_started = DateTimeField()
     task_id = StringField()
     # Is this run the baseline/reference model?
