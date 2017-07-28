@@ -56,7 +56,8 @@ class Tree(FileItem):
         try:
             self._data_store.validate_fid(fid)
             resp.status = falcon.HTTP_OK
-            resp.body = serializers.directory_tree_serializer(fid)
+            path = serializers.path_from_id(fid)
+            resp.body = serializers.directory_tree_serializer(path)
         except PermissionError as error:
             resp.status = falcon.HTTP_BAD_REQUEST
             resp.body = str(error)

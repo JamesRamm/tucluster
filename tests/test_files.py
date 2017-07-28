@@ -34,7 +34,7 @@ class TestFiles:
 
         response = client.simulate_get('/files/tree/{}'.format(fid))
         assert response.status == falcon.HTTP_OK
-        assert response.text == directory_tree_serializer(fid)
+        assert response.text == directory_tree_serializer(settings['MODEL_DATA_DIR'])
 
     def test_get_file(self, client):
         '''Test we can download a result file
