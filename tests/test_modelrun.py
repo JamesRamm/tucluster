@@ -27,11 +27,11 @@ class TestModelRun:
         '''
         model = Model(
             name=str(uuid.uuid4()),
-            entry_points=['test1.tcf', 'test2.tcf'],
+            entry_points=['test1.tcf', 'test2.py'],
             folder=os.path.dirname(__file__)
         ).save()
         body = {
-            'controlFile': 'test1.tcf',
+            'entrypoint': 'test1.tcf',
             'modelName': model.name,
             'mock': True
         }
@@ -50,7 +50,7 @@ class TestModelRun:
         response = client.simulate_post(
             '/runs',
             body=json.dumps({
-                'controlFile': 'test1.tcf'
+                'entrypoint': 'test1.tcf'
             })
         )
         assert response.status == falcon.HTTP_BAD_REQUEST

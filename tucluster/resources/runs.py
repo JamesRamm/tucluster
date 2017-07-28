@@ -57,15 +57,8 @@ class ModelRunCollection(object):
             - ``modelName``: The name of the parent ``Model`` instance which defines the previously
                 uploaded model data.
 
-            - ``controlFile``: The .tcf Tuflow control file to use for the modelling task.
+            - ``entrypoint``: The .tcf Tuflow control file to use for the modelling task.
                 A list of available control files is available by inspecting ``Model`` instances
-
-            - ``tuflowExe``: Optional. The full path of an available tuflow (or otherwise)
-                executable to run against the chosen control file. Available executables
-                are configured (by the site admin).
-                in the settings file given to tucluster. If not provided, this will default to the
-                first available executable. [I.e. if only one executable has been configured, this
-                option can be safely omitted]
 
             - ``mock``: Boolean value stating whether to mock the the modelling task instead
                 of actually running tuflow. Mocking will cause a do-nothing task to be executed
@@ -77,16 +70,14 @@ class ModelRunCollection(object):
         '''
         doc = json.load(req.bounded_stream)
         try:
-            entry_point = doc['controlFile']
+            entry_point = doc['entrypoint']
             model = Model.objects.get(name=doc['modelName'])
-            tuflow_exe = doc.get(
-                'tuflowExe', next(iter(settings['TUFLOW_EXES'].values())))
             mock = doc.get('mock', False)
 
             # Start the task
             task = tasks.run_tuflow.delay(
                 os.path.join(model.resolve_folder(), entry_point),
-                tuflow_exe,
+                settings['TUFLOW_PATH'],
                 mock=mock
             )
 

@@ -15,9 +15,7 @@ __DEFAULTS = {
         "port": 27017
     },
     "MODEL_DATA_DIR": os.path.join(os.path.dirname(__file__), 'data'),
-    "TUFLOW_EXES": {
-        'Tuflow Classic': 'tuflow',
-    }
+    "TUFLOW_PATH": "tuflow"
 }
 
 
