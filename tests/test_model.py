@@ -73,7 +73,8 @@ class TestModel:
         model = self._create_model()
         body = {
             'name': 'My Model',
-            'description': 'My Model Description'
+            'description': 'My Model Description',
+            'email': 'random@gmail.com'
         }
         response = client.simulate_patch(
             '/models/{}'.format(model.name),
