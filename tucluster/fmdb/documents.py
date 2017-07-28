@@ -29,22 +29,30 @@ from mongoengine import (
     ReferenceField,
     PolygonField,
     EmailField,
-    DoesNotExist,
     CASCADE
 )
 from tucluster.fmdb.serializers import id_from_path, path_from_id
 
 class Model(Document):
+    '''Metadata for a single Model.
+
+    Conceptually a model is a region or project which has a set of
+    input data files relating to that project. It may have
+    have multiple individual flood models (ModelRuns), but typically
+    would designate a single of these runs as the definitive or baseline
+    flood model.
     '''
-    Meta data about a task given to tuflow
-    '''
-    name = StringField(required=True, unique=True)
-    email = EmailField()
-    description = StringField()
+    name = StringField(required=True, unique=True, help_text='Name of the model')
+    email = EmailField(help_text='Email of a person who is responsible for this model')
+    description = StringField(help_text="Optional, short description of the model")
     date_created = DateTimeField(default=datetime.datetime.now)
-    folder = StringField()
-    control_files = ListField(StringField())
-    tuflow_exe = StringField()
+    folder = StringField(help_text="Path to folder containing model data")
+    entry_points = ListField(
+        StringField(),
+        help_text=(
+            'List of entry points for the model.'
+            ' These may be tuflow control files or anuga python scripts')
+    )
 
     meta = {
         'indexes': [
@@ -58,24 +66,39 @@ class Model(Document):
             # Gather all the files which have been uploaded to provide
             # record of initial state of the model folder
             fnames = [
-                name for name in os.listdir(self.folder) if name.endswith('.tcf')
+                name for name in os.listdir(self.folder) if name.endswith(('.tcf', '.py'))
             ]
 
             # Ensure folder is a base64 id rather than a path
             self.folder = id_from_path(self.folder)
-            self.control_files = fnames
+            self.entry_points = fnames
 
     def resolve_folder(self):
         return path_from_id(self.folder)
 
+ENGINES = (
+    ('tuflow', 'Tuflow'),
+    ('anuga', 'Anuga'),
+)
 
 class ModelRun(Document):
 
-    control_file = StringField(required=True)
+    entry_point = StringField(
+        required=True,
+        help_text="File to be used as the entry point for Anuga/Tuflow"
+    )
     time_started = DateTimeField()
     task_id = StringField()
+
+    engine = StringField(
+        max_length=6,
+        choices=ENGINES,
+        help_text="The flood modelling engine used for this run",
+        required=True
+    )
+
     # Is this run the baseline/reference model?
-    is_baseline = BooleanField()
+    is_baseline = BooleanField(help_text="If true, designates this run as the baseline model")
     # The model area is defined by the GIS file referred to in the
     # control file for this run
     # 'Read GIS Location' is the command

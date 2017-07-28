@@ -49,6 +49,12 @@ class TestModel:
         assert response.text == model.to_json()
         assert response.status == falcon.HTTP_OK
 
+    def test_bad_get_model(self, client):
+        '''Test we get an appropriate response
+        if we try to get a model which doesnt exist
+        '''
+        response = client.simulate_get('/models/badName')
+        assert response.status == falcon.HTTP_BAD_REQUEST
 
     def test_posted_model_gets_saved(self, client):
         '''The API can accept a data archive, create and
@@ -90,7 +96,8 @@ class TestMonitoring:
         '''Test we can get the status of a task for a model run
         '''
         run = ModelRun(
-            control_file='control2.tcf',
+            entry_point='control2.py',
+            engine='anuga'
         ).save()
 
         response = client.simulate_get('/tasks/{}'.format(str(run.task_id)))

@@ -22,7 +22,7 @@ class ModelRunCollection(object):
 
         A ``ModelRun`` has the following attributes:
 
-        - ``control_file``: The tuflow control file used in this run.
+        - ``entry_point``: The tuflow control file used in this run.
         - ``task_id``: The ID of the asynchronous task where the modelling program (tuflow)
             is being executed. This id can be used to inspect the task results by passing it
             to the ``/tasks/{id}`` endpoint.
@@ -57,15 +57,10 @@ class ModelRunCollection(object):
             - ``modelName``: The name of the parent ``Model`` instance which defines the previously
                 uploaded model data.
 
-            - ``controlFile``: The .tcf Tuflow control file to use for the modelling task.
+            - ``entrypoint``: The .tcf Tuflow control file to use for the modelling task.
                 A list of available control files is available by inspecting ``Model`` instances
 
-            - ``tuflowExe``: Optional. The full path of an available tuflow (or otherwise)
-                executable to run against the chosen control file. Available executables
-                are configured (by the site admin).
-                in the settings file given to tucluster. If not provided, this will default to the
-                first available executable. [I.e. if only one executable has been configured, this
-                option can be safely omitted]
+            - ``engine``: 'tuflow' or 'anuga'. The flood modelling software to use.
 
             - ``mock``: Boolean value stating whether to mock the the modelling task instead
                 of actually running tuflow. Mocking will cause a do-nothing task to be executed
@@ -77,24 +72,29 @@ class ModelRunCollection(object):
         '''
         doc = json.load(req.bounded_stream)
         try:
-            control_file = doc['controlFile']
+            entry_point = doc['entrypoint']
+            engine = doc['engine']
             model = Model.objects.get(name=doc['modelName'])
-            tuflow_exe = doc.get(
-                'tuflowExe', next(iter(settings['TUFLOW_EXES'].values())))
             mock = doc.get('mock', False)
 
             # Start the task
-            task = tasks.run_tuflow.delay(
-                os.path.join(model.resolve_folder(), control_file),
-                tuflow_exe,
-                mock=mock
-            )
+            if engine == 'tuflow':
+                task = tasks.run_tuflow.delay(
+                    os.path.join(model.resolve_folder(), entry_point),
+                    settings['TUFLOW_PATH'],
+                    mock=mock
+                )
+            elif engine == 'anuga':
+                task = tasks.run_anuga.delay(
+                    os.path.join(model.resolve_folder(), entry_point)
+                )
 
             # Create the model run
             run = self._document(
-                control_file=control_file,
+                entry_point=entry_point,
                 task_id=task.id,
-                model=model
+                model=model,
+                engine=engine
             ).save()
 
             resp.location = '/runs/{}'.format(run.id)
@@ -127,7 +127,8 @@ class ModelRunItem(ModelRunCollection):
         resp.status = falcon.HTTP_400
 
     def on_patch(self, req, resp, oid):
-
+        '''Update a model run to specify whether it is the baseline run.
+        '''
         doc = self._document.objects.get(id=oid)
         data = json.load(req.bounded_stream)
         doc.is_baseline = data['isBaseline']
