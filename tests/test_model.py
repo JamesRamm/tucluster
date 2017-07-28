@@ -49,6 +49,12 @@ class TestModel:
         assert response.text == model.to_json()
         assert response.status == falcon.HTTP_OK
 
+    def test_bad_get_model(self, client):
+        '''Test we get an appropriate response
+        if we try to get a model which doesnt exist
+        '''
+        response = client.simulate_get('/models/badName')
+        assert response.status == falcon.HTTP_BAD_REQUEST
 
     def test_posted_model_gets_saved(self, client):
         '''The API can accept a data archive, create and
