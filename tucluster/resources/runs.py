@@ -2,7 +2,7 @@ import json
 import os
 import falcon
 from qflow import tasks
-from fmdb import Model, serializers
+from tucluster.fmdb import Model, serializers
 from tucluster.conf import settings
 
 

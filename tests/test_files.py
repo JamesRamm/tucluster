@@ -4,7 +4,7 @@ import os
 import pathlib
 import falcon
 from falcon import testing
-from fmdb.serializers import directory_tree_serializer, id_from_path
+from tucluster.fmdb.serializers import directory_tree_serializer, id_from_path
 from tucluster.conf import settings
 from tucluster.resources.files import FileItem
 from .fixtures import client

@@ -4,8 +4,8 @@ import uuid
 import mimetypes
 import os
 import io
-import fmdb
 from qflow.utils import extract_model, ensure_dir
+from tucluster import fmdb
 
 
 class DataStore(object):

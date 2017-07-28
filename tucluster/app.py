@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import falcon
-from fmdb import connect, Model, ModelRun, User
+from tucluster.fmdb import connect, Model, ModelRun, User
 
 # Import the celery app to ensure it is initialised when we start the server
 from qflow.celery import app

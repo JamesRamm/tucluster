@@ -5,7 +5,7 @@ import json
 import os
 import falcon
 from falcon import testing
-from fmdb import Model, ModelRun
+from tucluster.fmdb import Model, ModelRun
 from tucluster.conf import settings
 from .fixtures import client
 

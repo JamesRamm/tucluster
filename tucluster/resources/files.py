@@ -1,7 +1,7 @@
 '''HTTP interface to user uploaded files and model result files
 '''
 import falcon
-from fmdb import serializers
+from tucluster.fmdb import serializers
 
 
 class FileItem(object):
