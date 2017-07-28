@@ -18,10 +18,11 @@ class TestModelRun:
         direct = settings['MODEL_DATA_DIR']
         return ModelRun(
             entry_point='{}.tcf'.format(name),
+            engine='tuflow'
         ).save()
 
 
-    def test_post_model_run(self, client):
+    def test_post_model_run_tuflow(self, client):
         '''The API can start a background task to run a tuflow model
         for the given Model name and control file name
         '''
@@ -33,6 +34,29 @@ class TestModelRun:
         body = {
             'entrypoint': 'test1.tcf',
             'modelName': model.name,
+            'engine': 'tuflow',
+            'mock': True
+        }
+        response = client.simulate_post(
+            '/runs',
+            body=json.dumps(body)
+        )
+        assert response.status == falcon.HTTP_CREATED
+        assert 'Location' in response.headers
+
+    def test_post_model_run_anuga(self, client):
+        '''The API can start a background task to run a tuflow model
+        for the given Model name and control file name
+        '''
+        model = Model(
+            name=str(uuid.uuid4()),
+            entry_points=['test1.tcf', 'test2.py'],
+            folder=os.path.dirname(__file__)
+        ).save()
+        body = {
+            'entrypoint': 'test2.py',
+            'modelName': model.name,
+            'engine': 'anuga',
             'mock': True
         }
         response = client.simulate_post(

@@ -60,6 +60,8 @@ class ModelRunCollection(object):
             - ``entrypoint``: The .tcf Tuflow control file to use for the modelling task.
                 A list of available control files is available by inspecting ``Model`` instances
 
+            - ``engine``: 'tuflow' or 'anuga'. The flood modelling software to use.
+
             - ``mock``: Boolean value stating whether to mock the the modelling task instead
                 of actually running tuflow. Mocking will cause a do-nothing task to be executed
                 for ~1 min. No modelling software will be executed and no results created.
@@ -71,21 +73,28 @@ class ModelRunCollection(object):
         doc = json.load(req.bounded_stream)
         try:
             entry_point = doc['entrypoint']
+            engine = doc['engine']
             model = Model.objects.get(name=doc['modelName'])
             mock = doc.get('mock', False)
 
             # Start the task
-            task = tasks.run_tuflow.delay(
-                os.path.join(model.resolve_folder(), entry_point),
-                settings['TUFLOW_PATH'],
-                mock=mock
-            )
+            if engine == 'tuflow':
+                task = tasks.run_tuflow.delay(
+                    os.path.join(model.resolve_folder(), entry_point),
+                    settings['TUFLOW_PATH'],
+                    mock=mock
+                )
+            elif engine == 'anuga':
+                task = tasks.run_anuga.delay(
+                    os.path.join(model.resolve_folder(), entry_point)
+                )
 
             # Create the model run
             run = self._document(
                 entry_point=entry_point,
                 task_id=task.id,
-                model=model
+                model=model,
+                engine=engine
             ).save()
 
             resp.location = '/runs/{}'.format(run.id)
@@ -118,7 +127,8 @@ class ModelRunItem(ModelRunCollection):
         resp.status = falcon.HTTP_400
 
     def on_patch(self, req, resp, oid):
-
+        '''Update a model run to specify whether it is the baseline run.
+        '''
         doc = self._document.objects.get(id=oid)
         data = json.load(req.bounded_stream)
         doc.is_baseline = data['isBaseline']

@@ -76,6 +76,10 @@ class Model(Document):
     def resolve_folder(self):
         return path_from_id(self.folder)
 
+ENGINES = (
+    ('tuflow', 'Tuflow'),
+    ('anuga', 'Anuga'),
+)
 
 class ModelRun(Document):
 
@@ -85,6 +89,14 @@ class ModelRun(Document):
     )
     time_started = DateTimeField()
     task_id = StringField()
+
+    engine = StringField(
+        max_length=6,
+        choices=ENGINES,
+        help_text="The flood modelling engine used for this run",
+        required=True
+    )
+
     # Is this run the baseline/reference model?
     is_baseline = BooleanField(help_text="If true, designates this run as the baseline model")
     # The model area is defined by the GIS file referred to in the
