@@ -109,6 +109,6 @@ class ModelItem(object):
         if 'name' in data:
             model.name = data['name']
         if 'email' in data:
-            model.set_user(data['email'])
+            model.email = data['email']
         model.save()
         resp.status = falcon.HTTP_NO_CONTENT

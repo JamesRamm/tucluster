@@ -1,1 +1,1 @@
-from tucluster.resources import models, runs, tasks, utils, files, users
+from tucluster.resources import models, runs, tasks, utils, files

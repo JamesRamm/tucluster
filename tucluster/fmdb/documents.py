@@ -32,45 +32,19 @@ from mongoengine import (
     DoesNotExist,
     CASCADE
 )
-from passlib.hash import pbkdf2_sha256
-
 from tucluster.fmdb.serializers import id_from_path, path_from_id
-
-class User(Document):
-    '''
-    Represents a user
-    '''
-    email = EmailField(required=True, unique=True)
-    password = StringField()
-
-    def clean(self):
-        # Hash the password before saving
-        self.password = pbkdf2_sha256.hash(self.password)
-
-    @classmethod
-    def verify(cls, email, password):
-        '''Verify the given password matches the stored password hash
-        Returns the ``User`` instance if the user exists and is authenticated,
-        otherwise None
-        '''
-        try:
-            user = cls.objects.get(email=email)
-            if pbkdf2_sha256.verify(password, user.password):
-                return user
-        except DoesNotExist:
-            pass
 
 class Model(Document):
     '''
     Meta data about a task given to tuflow
     '''
     name = StringField(required=True, unique=True)
+    email = EmailField()
     description = StringField()
     date_created = DateTimeField(default=datetime.datetime.now)
     folder = StringField()
     control_files = ListField(StringField())
     tuflow_exe = StringField()
-    user = ReferenceField(User)
 
     meta = {
         'indexes': [
@@ -93,11 +67,6 @@ class Model(Document):
 
     def resolve_folder(self):
         return path_from_id(self.folder)
-
-    def set_user(self, email):
-        user = User.objects.get(email=email)
-        self.user = user
-        self.save()
 
 
 class ModelRun(Document):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import falcon
-from tucluster.fmdb import connect, Model, ModelRun, User
+from tucluster.fmdb import connect, Model, ModelRun
 
 # Import the celery app to ensure it is initialised when we start the server
 from qflow.celery import app
@@ -55,9 +55,4 @@ api.add_route(
 api.add_route(
     '/files/tree/{fid}',
     resources.files.Tree(data_store)
-)
-
-api.add_route(
-    '/users',
-    resources.users.UserCollection(User)
 )
