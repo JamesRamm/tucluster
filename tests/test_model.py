@@ -73,6 +73,21 @@ class TestModel:
         assert 'Location' in response.headers
         assert '_id' in response.json
 
+    def test_create_empty_model(self, client):
+        '''The API can create a ``Model`` without any data
+        '''
+        body = {
+            'name': 'test model',
+            'description': 'test model description'
+        }
+        response = client.simulate_post(
+            '/models',
+            body=json.dumps(body),
+            headers={'content-type': 'application/json'}
+        )
+        assert response.status == falcon.HTTP_CREATED
+        assert 'Location' in response.headers
+
     def test_update_model(self, client):
         '''Test updating a ``Model``
         '''

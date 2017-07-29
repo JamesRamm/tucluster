@@ -52,16 +52,34 @@ class ModelCollection(object):
 
             http post localhost:8000/models @/path/to/my/archive.zip
         '''
-        directory, name = self._data_store.save(req.stream, req.content_type)
-        # Create the model
-        model = self._document(
-            name=name,
-            folder=directory
-        ).save()
+        if req.content_type == 'application/json':
+            # Create a model without data.
+            data = json.load(req.bounded_stream)
+            model = self._document(
+                name=data['name']
+            )
+            if 'description' in data:
+                model.description = data['description']
+            model.save()
 
-        resp.status = falcon.HTTP_CREATED
-        resp.location = '/models/{}'.format(model.name)
-        resp.body = model.to_json()
+            resp.status = falcon.HTTP_CREATED
+            resp.location = '/models/{}'.format(model.name)
+            resp.body = model.to_json()
+
+        elif req.content_type == 'application/zip':
+            directory, name = self._data_store.save(req.stream, req.content_type)
+            # Create the model
+            model = self._document(
+                name=name,
+                folder=directory
+            ).save()
+
+            resp.status = falcon.HTTP_CREATED
+            resp.location = '/models/{}'.format(model.name)
+            resp.body = model.to_json()
+        else:
+            resp.status = falcon.HTTP_BAD_REQUEST
+            resp.body = 'Content type must be zip or json'
 
 class ModelItem(object):
     '''Fetch or update a single ``Model`` document
