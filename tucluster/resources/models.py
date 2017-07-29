@@ -63,6 +63,8 @@ class ModelCollection(object):
             )
             if 'description' in data:
                 model.description = data['description']
+            if 'email' in data:
+                model.email = data['email']
             model.save()
 
             resp.status = falcon.HTTP_CREATED

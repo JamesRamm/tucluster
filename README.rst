@@ -36,11 +36,13 @@ Future
 ------
 This API is very young and we have many ideas for expanding. Here is a rough roadmap of what we would like to achieve:
 
-- Update models with new input data and re-run
 - User accounts
 - Email on result/failure
 - Searching of models via various attributes (date, user etc)
 - Spatial searching of models based on model boundary
+- Validation of Anuga scripts using introspection
+- Deployment scripts or containerization
+- AWS deployment helpers
 
 The following are ideas for tucluster which may be moved to other projects/their own projects:
 
@@ -104,10 +106,6 @@ Endpoints
         path described by ``fid``. This is a url-safe base64 encoding of a folder path as can be
         retrieved from a successful task result (for output folders) or a model, which returns the
         input folder location as a fid.
-
-:``/users``:
-        - GET: Returns a list of all users that have been created. A user is represented by an email address.
-        - POST: Create a new user by submitting an email address.
 
 Licence
 --------
