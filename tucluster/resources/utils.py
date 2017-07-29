@@ -21,24 +21,25 @@ class DataStore(object):
         self._uuidgen = uuidgen
         self._fopen = fopen
 
+
     def _write(self, path, stream):
         with self._fopen(path, 'wb') as fout:
             while True:
                 chunk = stream.read(self._CHUNK_SIZE_BYTES)
                 if not chunk:
                     break
-
                 fout.write(chunk)
 
 
-    def save_zip(self, stream, content_type):
+    def save_zip(self, stream, content_type, name=None):
         '''Save the zip stream to disk and extract its contents
         '''
         # Make sure the storage path exists
         ensure_dir(self._storage_path)
 
         ext = mimetypes.guess_extension(content_type)
-        name = str(self._uuidgen())
+        if not name:
+            name = str(self._uuidgen())
         fname = '{uuid}{ext}'.format(uuid=name, ext=ext)
         archive_path = os.path.join(self._storage_path, fname)
 
@@ -46,6 +47,7 @@ class DataStore(object):
         # extract the zip file
         directory = extract_model(archive_path, name, self._storage_path)
         return directory, name
+
 
     def save(self, stream, folder, filename):
         '''Save the file stream to disk
@@ -59,7 +61,8 @@ class DataStore(object):
         path = os.path.join(root, filename)
 
         self._write(path, stream)
-        return fmdb.id_from_path(path), root
+        return root, fmdb.id_from_path(path)
+
 
     def open(self, fid):
         '''Open the file path given by its' fid and return the stream
@@ -71,6 +74,7 @@ class DataStore(object):
         content_type = mimetypes.guess_type(filepath)[0]
 
         return stream, stream_len, content_type
+
 
     def validate_fid(self, fid):
         '''Validate a url-safe base64 encoding of a file or folder path on the server.

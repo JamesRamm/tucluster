@@ -132,22 +132,32 @@ class ModelItem(ModelCollection):
             model.save()
             resp.status = falcon.HTTP_NO_CONTENT
         else:
-            disp = req.get_header('content-disposition')
-            result = disp.split('filename=')
-            if len(result) == 2:
-                filename = result[1].replace('"', '').replace("'", '')
-            else:
-                ext = mimetypes.guess_extension(req.content_type)
-                filename = '{}{}'.format(uuid.uuid4(), ext)
-
             if model.folder:
                 folder = model.resolve_folder()
             else:
                 folder = model.name
-            fid, root = self._data_store.save(req.stream, folder, filename)
+
+            if req.content_type == 'application/zip':
+                # Extract any uploaded zip file into the model data folder
+                root, name = self._data_store.save_zip(req.stream, req.content_type, folder)
+            else:
+                # Save a single uploaded file to the model folder.
+                # If the filename is given, use that, otherwise
+                # try to guess the file type and generate a name
+                disp = req.get_header('content-disposition')
+                result = disp.split('filename=')
+                if len(result) == 2:
+                    filename = result[1].replace('"', '').replace("'", '')
+                else:
+                    ext = mimetypes.guess_extension(req.content_type)
+                    filename = '{}{}'.format(uuid.uuid4(), ext)
+                root, fid = self._data_store.save(req.stream, folder, filename)
+                resp.body = json.dumps({
+                    'fid': fid
+                })
+
+
             model.folder = root
             model.save()
             resp.status = falcon.HTTP_ACCEPTED
-            resp.body = json.dumps({
-                'fid': fid
-            })
+

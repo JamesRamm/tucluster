@@ -136,7 +136,7 @@ class TestModel:
         )
         assert response.status == falcon.HTTP_ACCEPTED
 
-        # Try again bu without setting the filename
+        # Try again but without setting the filename
         headers['content-disposition'] = 'attachment'
         headers['content-type'] = 'image/tiff'
         response = client.simulate_patch(
