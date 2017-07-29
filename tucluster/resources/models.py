@@ -1,4 +1,7 @@
 import json
+import mimetypes
+import os
+import uuid
 import falcon
 
 
@@ -67,7 +70,7 @@ class ModelCollection(object):
             resp.body = model.to_json()
 
         elif req.content_type == 'application/zip':
-            directory, name = self._data_store.save(req.stream, req.content_type)
+            directory, name = self._data_store.save_zip(req.stream, req.content_type)
             # Create the model
             model = self._document(
                 name=name,
@@ -81,14 +84,9 @@ class ModelCollection(object):
             resp.status = falcon.HTTP_BAD_REQUEST
             resp.body = 'Content type must be zip or json'
 
-class ModelItem(object):
+class ModelItem(ModelCollection):
     '''Fetch or update a single ``Model`` document
     '''
-    def __init__(self, model_document):
-        # MongoEngine ``Document`` class which provides the data for this
-        # resource
-        self._document = model_document
-
     def get_object(self, name):
         try:
             return self._document.objects.get(name=name)
@@ -121,12 +119,33 @@ class ModelItem(object):
 
         '''
         model = self.get_object(name)
-        data = json.load(req.bounded_stream)
-        if 'description' in data:
-            model.description = data['description']
-        if 'name' in data:
-            model.name = data['name']
-        if 'email' in data:
-            model.email = data['email']
-        model.save()
-        resp.status = falcon.HTTP_NO_CONTENT
+        if req.content_type == 'application/json':
+            data = json.load(req.bounded_stream)
+            if 'description' in data:
+                model.description = data['description']
+            if 'name' in data:
+                model.name = data['name']
+            if 'email' in data:
+                model.email = data['email']
+            model.save()
+            resp.status = falcon.HTTP_NO_CONTENT
+        else:
+            disp = req.get_header('content-disposition')
+            result = disp.split('filename=')
+            if len(result) == 2:
+                filename = result[1].replace('"', '').replace("'", '')
+            else:
+                ext = mimetypes.guess_extension(req.content_type)
+                filename = '{}{}'.format(uuid.uuid4(), ext)
+
+            if model.folder:
+                folder = model.resolve_folder()
+            else:
+                folder = model.name
+            fid, root = self._data_store.save(req.stream, folder, filename)
+            model.folder = root
+            model.save()
+            resp.status = falcon.HTTP_ACCEPTED
+            resp.body = json.dumps({
+                'fid': fid
+            })

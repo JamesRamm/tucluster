@@ -21,8 +21,18 @@ class DataStore(object):
         self._uuidgen = uuidgen
         self._fopen = fopen
 
-    def save(self, stream, content_type):
-        '''Save the stream to disk and extract its contents
+    def _write(self, path, stream):
+        with self._fopen(path, 'wb') as fout:
+            while True:
+                chunk = stream.read(self._CHUNK_SIZE_BYTES)
+                if not chunk:
+                    break
+
+                fout.write(chunk)
+
+
+    def save_zip(self, stream, content_type):
+        '''Save the zip stream to disk and extract its contents
         '''
         # Make sure the storage path exists
         ensure_dir(self._storage_path)
@@ -32,17 +42,24 @@ class DataStore(object):
         fname = '{uuid}{ext}'.format(uuid=name, ext=ext)
         archive_path = os.path.join(self._storage_path, fname)
 
-        with self._fopen(archive_path, 'wb') as archive:
-            while True:
-                chunk = stream.read(self._CHUNK_SIZE_BYTES)
-                if not chunk:
-                    break
-
-                archive.write(chunk)
-
+        self._write(archive_path, stream)
         # extract the zip file
         directory = extract_model(archive_path, name, self._storage_path)
         return directory, name
+
+    def save(self, stream, folder, filename):
+        '''Save the file stream to disk
+        '''
+        if os.path.isabs(folder):
+            root = folder
+        else:
+            root = os.path.join(self._storage_path, folder)
+
+        ensure_dir(root)
+        path = os.path.join(root, filename)
+
+        self._write(path, stream)
+        return fmdb.id_from_path(path), root
 
     def open(self, fid):
         '''Open the file path given by its' fid and return the stream

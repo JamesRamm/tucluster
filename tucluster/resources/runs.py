@@ -124,7 +124,7 @@ class ModelRunItem(ModelRunCollection):
         resp.status = falcon.HTTP_200
 
     def on_post(self, req, resp, oid):
-        resp.status = falcon.HTTP_400
+        resp.status = falcon.HTTP_METHOD_NOT_ALLOWED
 
     def on_patch(self, req, resp, oid):
         '''Update a model run to specify whether it is the baseline run.

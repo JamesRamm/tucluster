@@ -68,10 +68,10 @@ class Model(Document):
             fnames = [
                 name for name in os.listdir(self.folder) if name.endswith(('.tcf', '.py'))
             ]
-
+            self.entry_points = fnames
             # Ensure folder is a base64 id rather than a path
             self.folder = id_from_path(self.folder)
-            self.entry_points = fnames
+
 
     def resolve_folder(self):
         return path_from_id(self.folder)

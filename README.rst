@@ -70,11 +70,12 @@ Endpoints
 :``/models``:
         - GET: Returns a list of all models that have been created. A model has a name, description and a folder containing all tuflow model input files
         - POST: Upload a single zip archive containing all model data. TCF files must be in the root directory. Returns a representation of the
-        created model.
+        created model. Alternatively, pass a JSON object with a ``name`` attribute to create a new model without any data
 
 :``/models/{name}``:
         - GET: Retrieve a representation of single model by its name
         - PATCH: Update the ``name``, ``description`` and ``email`` (user) of a single model.
+        You may also upload a file to be added to the model data folder
 
 :``/runs``:
         - GET: Returns a list of all model runs. A model run represents a single execution of a Tuflow model.

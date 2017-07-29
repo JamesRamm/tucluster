@@ -29,7 +29,7 @@ api.add_route(
 
 api.add_route(
     '/models/{name}',
-    resources.models.ModelItem(Model)
+    resources.models.ModelItem(data_store, Model)
 )
 
 api.add_route(

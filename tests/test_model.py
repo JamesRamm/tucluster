@@ -88,6 +88,21 @@ class TestModel:
         assert response.status == falcon.HTTP_CREATED
         assert 'Location' in response.headers
 
+    def test_post_bad_content_type(self, client):
+        '''The API will reject a POST request without
+        the content-type header correctly set
+        '''
+        body = {
+            'name': 'test model',
+            'description': 'test model description'
+        }
+        response = client.simulate_post(
+            '/models',
+            body=json.dumps(body)
+        )
+        assert response.status == falcon.HTTP_BAD_REQUEST
+
+
     def test_update_model(self, client):
         '''Test updating a ``Model``
         '''
@@ -99,10 +114,38 @@ class TestModel:
         }
         response = client.simulate_patch(
             '/models/{}'.format(model.name),
-            body=json.dumps(body)
+            body=json.dumps(body),
+            headers={'content-type': 'application/json'}
         )
 
         assert response.status == falcon.HTTP_NO_CONTENT
+
+    def test_update_model_with_file(self, client):
+        '''Test adding a new data file to an existing model
+        '''
+        model = self._create_model()
+        headers = {
+            'content-disposition': 'attachment; filename="random_file.tif"',
+            'content-type': 'application/octet-stream'
+        }
+        body = b'fake-tif-bytes'
+        response = client.simulate_patch(
+            '/models/{}'.format(model.name),
+            body=body,
+            headers=headers
+        )
+        assert response.status == falcon.HTTP_ACCEPTED
+
+        # Try again bu without setting the filename
+        headers['content-disposition'] = 'attachment'
+        headers['content-type'] = 'image/tiff'
+        response = client.simulate_patch(
+            '/models/{}'.format(model.name),
+            body=body,
+            headers=headers
+        )
+        assert response.status == falcon.HTTP_ACCEPTED
+
 
 class TestMonitoring:
     '''Test we can monitor tasks as they are running
