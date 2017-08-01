@@ -103,7 +103,7 @@ class ModelItem(ModelCollection):
 
         Example::
 
-            http localhost:8000/model/{name}
+            http localhost:8000/models/{name}
         '''
         model = self.get_object(name)
         resp.status = falcon.HTTP_OK
@@ -160,4 +160,3 @@ class ModelItem(ModelCollection):
             model.folder = root
             model.save()
             resp.status = falcon.HTTP_ACCEPTED
-

@@ -31,7 +31,7 @@ from mongoengine import (
     EmailField,
     CASCADE
 )
-from tucluster.fmdb.serializers import id_from_path, path_from_id
+from tucluster.fmdb.serializers import path_from_id
 
 class Model(Document):
     '''Metadata for a single Model.
@@ -46,7 +46,7 @@ class Model(Document):
     email = EmailField(help_text='Email of a person who is responsible for this model')
     description = StringField(help_text="Optional, short description of the model")
     date_created = DateTimeField(default=datetime.datetime.now)
-    folder = StringField(help_text="Path to folder containing model data")
+    folder = StringField(help_text="Path ID to folder containing model data")
     entry_points = ListField(
         StringField(),
         help_text=(
@@ -63,14 +63,17 @@ class Model(Document):
 
     def clean(self):
         if self.folder:
+            # Validate the folder exists
+            path = self.resolve_folder()
+            if not os.path.exists(path):
+                raise NotADirectoryError('Model folder does not exist')
+
             # Gather all the files which have been uploaded to provide
             # record of initial state of the model folder
             fnames = [
-                name for name in os.listdir(self.folder) if name.endswith(('.tcf', '.py'))
+                name for name in os.listdir(self.resolve_folder()) if name.endswith(('.tcf', '.py'))
             ]
             self.entry_points = fnames
-            # Ensure folder is a base64 id rather than a path
-            self.folder = id_from_path(self.folder)
 
 
     def resolve_folder(self):

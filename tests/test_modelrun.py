@@ -5,7 +5,7 @@ import json
 import os
 import falcon
 from falcon import testing
-from tucluster.fmdb import Model, ModelRun
+from tucluster.fmdb import Model, ModelRun, id_from_path
 from tucluster.conf import settings
 from .fixtures import client
 
@@ -29,7 +29,7 @@ class TestModelRun:
         model = Model(
             name=str(uuid.uuid4()),
             entry_points=['test1.tcf', 'test2.py'],
-            folder=os.path.dirname(__file__)
+            folder=id_from_path(os.path.dirname(__file__))
         ).save()
         body = {
             'entrypoint': 'test1.tcf',
@@ -51,7 +51,7 @@ class TestModelRun:
         model = Model(
             name=str(uuid.uuid4()),
             entry_points=['test1.tcf', 'test2.py'],
-            folder=os.path.dirname(__file__)
+            folder=id_from_path(os.path.dirname(__file__))
         ).save()
         body = {
             'entrypoint': 'test2.py',

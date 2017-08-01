@@ -46,7 +46,7 @@ class DataStore(object):
         self._write(archive_path, stream)
         # extract the zip file
         directory = extract_model(archive_path, name, self._storage_path)
-        return directory, name
+        return fmdb.id_from_path(directory), name
 
 
     def save(self, stream, folder, filename):
@@ -61,7 +61,7 @@ class DataStore(object):
         path = os.path.join(root, filename)
 
         self._write(path, stream)
-        return root, fmdb.id_from_path(path)
+        return fmdb.id_from_path(root), fmdb.id_from_path(path)
 
 
     def open(self, fid):
