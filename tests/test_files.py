@@ -2,6 +2,7 @@
 '''
 import os
 import pathlib
+import json
 import falcon
 from falcon import testing
 from tucluster.fmdb.serializers import directory_tree_serializer, id_from_path
@@ -34,7 +35,7 @@ class TestFiles:
 
         response = client.simulate_get('/files/tree/{}'.format(fid))
         assert response.status == falcon.HTTP_OK
-        assert response.text == directory_tree_serializer(settings['MODEL_DATA_DIR'])
+        assert response.text == json.dumps(directory_tree_serializer(settings['MODEL_DATA_DIR']))
 
     def test_get_file(self, client):
         '''Test we can download a result file

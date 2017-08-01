@@ -1,5 +1,6 @@
 '''HTTP interface to user uploaded files and model result files
 '''
+import json
 import falcon
 from tucluster.fmdb import serializers
 
@@ -57,7 +58,7 @@ class Tree(FileItem):
             self._data_store.validate_fid(fid)
             resp.status = falcon.HTTP_OK
             path = serializers.path_from_id(fid)
-            resp.body = serializers.directory_tree_serializer(path)
+            resp.body = json.dumps(serializers.directory_tree_serializer(path))
         except PermissionError as error:
             resp.status = falcon.HTTP_BAD_REQUEST
             resp.body = str(error)

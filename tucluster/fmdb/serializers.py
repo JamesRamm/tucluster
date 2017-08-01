@@ -33,7 +33,6 @@ def directory_tree_serializer(path):
     hierarchy = {
         'type': 'folder',
         'name': os.path.basename(path),
-        'path': path,
         'id': id_from_path(path)
     }
     try:
@@ -43,4 +42,4 @@ def directory_tree_serializer(path):
         ]
     except NotADirectoryError:
         hierarchy['type'] = 'file'
-    return json.dumps(hierarchy)
+    return hierarchy
