@@ -3,6 +3,7 @@ import mimetypes
 import os
 import uuid
 import falcon
+from tucluster import fmdb
 
 
 class ModelCollection(object):
@@ -129,8 +130,14 @@ class ModelItem(ModelCollection):
                 model.name = data['name']
             if 'email' in data:
                 model.email = data['email']
-            model.save()
-            resp.status = falcon.HTTP_NO_CONTENT
+
+            try:
+                model.save()
+                resp.status = falcon.HTTP_NO_CONTENT
+            except fmdb.NotUniqueError:
+                resp.status = falcon.HTTP_BAD_REQUEST
+                resp.body = 'Name {} is already taken'.format(data['name'])
+
         else:
             if model.folder:
                 folder = model.resolve_folder()

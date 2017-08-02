@@ -44,7 +44,8 @@ class ModelRunCollection(object):
         if entrypoint:
             kwargs['entry_point'] = entrypoint
         if model:
-            kwargs['model__name'] = model
+            model = Model.objects.get(name=model)
+            kwargs['model'] = model
 
         if kwargs:
             docs = self._document.objects(**kwargs)
@@ -90,16 +91,15 @@ class ModelRunCollection(object):
             mock = doc.get('mock', False)
 
             # Start the task
+            path = os.path.join(model.resolve_folder(), entry_point)
             if engine == 'tuflow':
                 task = tasks.run_tuflow.delay(
-                    os.path.join(model.resolve_folder(), entry_point),
+                    path,
                     settings['TUFLOW_PATH'],
                     mock=mock
                 )
             elif engine == 'anuga':
-                task = tasks.run_anuga.delay(
-                    os.path.join(model.resolve_folder(), entry_point)
-                )
+                task = tasks.run_anuga.delay(path)
 
             # Create the model run
             run = self._document(

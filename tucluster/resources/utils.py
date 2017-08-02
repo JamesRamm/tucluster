@@ -3,6 +3,7 @@
 import uuid
 import mimetypes
 import os
+import shutil
 import io
 from qflow.utils import extract_model, ensure_dir
 from tucluster import fmdb
@@ -74,6 +75,15 @@ class DataStore(object):
         content_type = mimetypes.guess_type(filepath)[0]
 
         return stream, stream_len, content_type
+
+    def remove(self, fid):
+        '''Remove the file or folder by its' id
+        '''
+        path = self.validate_fid(fid)
+        if os.path.isfile(path):
+            os.remove(path)
+        else:
+            shutil.rmtree(path)
 
 
     def validate_fid(self, fid):

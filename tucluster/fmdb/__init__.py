@@ -7,6 +7,7 @@ __email__ = 'jamessramm@gmail.com'
 __version__ = '0.1.0'
 
 from mongoengine import connect as conn
+from mongoengine.errors import *
 from tucluster.fmdb.documents import Model, ModelRun
 from tucluster.fmdb import serializers
 from tucluster.fmdb.serializers import path_from_id, id_from_path
