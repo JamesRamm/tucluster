@@ -89,6 +89,12 @@ class TestModelRun:
         assert response.text == queryset.to_json()
         assert response.status == falcon.HTTP_OK
 
+    def test_filter_runs(self, client):
+        run = self._create_modelrun()
+        response = client.simulate_get('/runs', query_string='entrypoint={}'.format(run.entry_point))
+        queryset = ModelRun.objects(entry_point = run.entry_point)
+        assert response.text == queryset.to_json()
+        assert response.status == falcon.HTTP_OK
 
     def test_get_run(self, client):
         '''The API can return a single ``ModelRun`` document

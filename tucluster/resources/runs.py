@@ -37,7 +37,19 @@ class ModelRunCollection(object):
 
             http localhost:8000/runs
         '''
-        docs = self._document.objects.all()
+        # support optional filtering by entry_point and model
+        entrypoint = req.get_param('entrypoint')
+        model = req.get_param('model')
+        kwargs = {}
+        if entrypoint:
+            kwargs['entry_point'] = entrypoint
+        if model:
+            kwargs['model__name'] = model
+
+        if kwargs:
+            docs = self._document.objects(**kwargs)
+        else:
+            docs = self._document.objects.all()
 
         # Create a JSON representation of the resource
         resp.body = docs.to_json()
