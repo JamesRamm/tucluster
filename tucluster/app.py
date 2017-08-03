@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 import falcon
-from tucluster.fmdb import connect, Model, ModelRun
-
 # Import the celery app to ensure it is initialised when we start the server
 from qflow.celery import app
 from tucluster import resources
 from tucluster.conf import settings
+from tucluster.fmdb import connect, Model, ModelRun
 
 # Create the WSGI application. It is aliased to ``application``
 # as this is what gunicorn expects.
