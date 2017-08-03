@@ -16,25 +16,72 @@ You will need:
 - A hardware server on which to run the Redis message queue. This is responsible for queuing modelling tasks to be consumed by workers. Again, this is usually the same hardware on which the Tucluster API runs.
 - One or more worker 'nodes' (computers) which will run the Tucluster worker service and execut Tuflow models. Each node should have ANUGA or a licensed version of tuflow installed.
 
-It is up to you what configuration you use and will depend on both the number of tuflow license you have available and the anticipated workload.
-You may choose to run Tucluster on local hardware within your own network or make use of cloud services such as Amazons' EC2.
+For local development, you will typically install everything onto your single development computer.
 
 It should be noted that all the nodes in the cluster (workers and server) should have a common file system in which the modelling data and results will be placed.
 
 You will need to install `Redis<https://redis.io/>`_ and `MongoDB<https://www.mongodb.com/>`_ on your server.
+On each of your worker nodes, you will also need to install ANUGA and/or Tuflow.
 
-Once this is done, you can install tucluster.
+For light loads on a self-hosted cluster, a typical simple setup would have the tucluster webservice, mongodb and redis all running on a single
+hardware machine, with the tucluster worker on 1 or more separate machines with ANUGA and/or Tuflow installed:
+
+```
+    _________________
+   |                 |
+   | Tucluster server|
+   | MongoDB         |
+   | Redis           |
+   |_________________|
+           |
+    _________________
+   |                 |
+   |Tucluster Worker |
+   |ANUGA/Tuflow     |
+   |_________________|
+```
+
+
+ANUGA Setup
+------------
+
+In order to run ANUGA without conflicts with Tucluster library, TuCluster expects that
+ANUGA is installed into a conda environment called 'anuga'.
+
+1. Install Miniconda on each of your worker nodes. (https://conda.io/miniconda.html)
+2. Create a new environment and install the dependencies:
+    ```
+    conda create -n anuga python=2 pip nomkl nose numpy scipy matplotlib netcdf4
+    source activate anuga
+    conda install -c pingucarsti gdal
+    export GDAL_DATA=`gdal-config --datadir`
+    ```
+
+3. Clone Anuga to a suitable location on the worker: ``git clone https://github.com/GeoscienceAustralia/anuga_core``
+4. ``cd`` into the anuga directory and install:
+    ```
+    python setup.py build
+    sudo python setup.py install
+    ```
+
+Now proceed to install tucluster.
+
 
 Stable release
 --------------
 
-To install tucluster, run this command in your terminal:
+TuCluster requires python 3. If you have just installed ANUGA, be sure to ``deactivate`` the anuga environment
+before install TuCluster (and create a new environment for python 3 if necessary)
+
+To install TuCluster, run this command in your terminal:
 
 .. code-block:: console
 
     $ pip install tucluster
 
 This is the preferred method to install tucluster, as it will always install the most recent stable release.
+You need to install TuCluster on all your worker nodes and the main web server.
+
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
@@ -69,29 +116,4 @@ Once you have a copy of the source, you can install it with:
 
 .. _Github repo: https://github.com/JamesRamm/tucluster
 .. _tarball: https://github.com/JamesRamm/tucluster/tarball/master
-
-ANUGA Setup Notes
------------------
-
-In order to run ANUGA without conflicts with Tucluster library, TuCluster expects that
-ANUGA is installed into a conda environment called 'anuga'.
-
-You should setup this environment on each worker node and install ANUGA into it.
-ANUGA comes with tools for installing into a conda environment (https://github.com/GeoscienceAustralia/anuga_core/blob/master/tools/install_conda.sh)
-
-Running python scripts on the server is potentially dangerous and you should ensure that your webserver
-runs as a non-root user and restrict its permissions. Essentially, the only place it needs to be able to write files
-is the directory you set as the ``MODEL_DATA_DIR`` in your configuration file.
-
-Developers of ANUGA scripts should be aware of these restrictions and should set the ``datadir`` appropriately.
-The best advice here is to set it relative to the script file. E.g:
-
-``domain.set_datadir(os.path.dirname(__file__), 'results')``
-
-ANUGA scripts should also be carefully developed so they do not hang. E.g. causing the script to display a
-matplotlib figure or other GUI elements will prevent the script from terminating until the window has been manually closed.
-You should not do this! Any figures should be output directly to file.
-
-A user could still potentially write a malicious script which will delete the ``MODEL_DATA_DIR`` and future work
-will look at solutions to this problem.
 

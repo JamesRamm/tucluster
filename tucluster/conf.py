@@ -15,7 +15,8 @@ __DEFAULTS = {
         "port": 27017
     },
     "MODEL_DATA_DIR": os.path.join(os.path.dirname(__file__), 'data'),
-    "TUFLOW_PATH": "tuflow"
+    "TUFLOW_PATH": "tuflow",
+    "ANUGA_ENV": "anuga"
 }
 
 

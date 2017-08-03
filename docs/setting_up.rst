@@ -3,7 +3,6 @@
 Setting Up
 ===========
 
-
 Configuration
 -------------
 
@@ -24,9 +23,8 @@ Example config file:
             "port": 27017
         },
         "MODEL_DATA_DIR": "/path/to/data/dir",
-        "TUFLOW_EXES": {
-            'Tuflow Classic': 'tuflow',
-        }
+        "TUFLOW_PATH": "tuflow",
+        "ANUGA_ENV": "anuga"
     }
 
 
@@ -50,10 +48,12 @@ Here is an explanation of the keys in the above config:
     will manage the storage, upload and download of files. Manually adding/removing files could
     cause exceptions in TuClusters' execution.
 
-:TUFLOW_EXES:
-    This is a key: value list of all the Tuflow executables available on *each* worker node.
-    The key is the human-readable identifier or name of the tuflow version and the value is the
-    full path (or just name of the executable on linux) to the executable.
+:TUFLOW_PATH:
+    Path to the Tuflow executable to use on each worker node. This implies that it should be the same
+    on each node. If Tuflow is available globally on the system PATH, just enter the executable name
+
+:ANUGA_ENV:
+    Name of the conda environment in which ANUGA is installed.
 
 Running TuCluster
 -----------------
@@ -74,3 +74,20 @@ Run the above command on each server which you wish to execute tuflow models (re
 install tucluster on each of these nodes aswell!).
 
 You are now ready to start interacting with TuCluster
+
+
+Using ANUGA
+-----------
+
+Running python scripts on the server is potentially dangerous and you should ensure that your webserver
+runs as a non-root user and restrict its permissions. Essentially, the only place it needs to be able to write files
+is the directory you set as the ``MODEL_DATA_DIR`` in your configuration file.
+
+Developers of ANUGA scripts should be aware of these restrictions and should set the ``datadir`` appropriately.
+The best advice here is to set it relative to the script file. E.g:
+
+``domain.set_datadir(os.path.dirname(__file__), 'results')``
+
+ANUGA scripts should also be carefully developed so they do not hang. E.g. causing the script to display a
+matplotlib figure or other GUI elements will prevent the script from terminating until the window has been manually closed.
+You should not do this! Any figures should be output directly to file.

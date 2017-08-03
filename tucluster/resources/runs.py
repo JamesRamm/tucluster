@@ -101,7 +101,7 @@ class ModelRunCollection(object):
                     mock=mock
                 )
             elif engine == 'anuga':
-                task = tasks.run_anuga.delay(path)
+                task = tasks.run_anuga.delay(path, env_name=settings['ANUGA_ENV'])
 
             # Create the model run
             run = self._document(
