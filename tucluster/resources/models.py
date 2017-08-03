@@ -1,6 +1,5 @@
 import json
 import mimetypes
-import os
 import uuid
 import falcon
 from tucluster import fmdb

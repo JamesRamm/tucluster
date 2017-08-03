@@ -1,8 +1,10 @@
+'''Request handlers for ModelRun data
+'''
 import json
 import os
 import falcon
 from qflow import tasks
-from tucluster.fmdb import Model, serializers
+from tucluster.fmdb import Model
 from tucluster.conf import settings
 
 
