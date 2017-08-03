@@ -7,6 +7,8 @@ HTTP API for managing and running Anuga and Tuflow models in the cloud or a loca
 .. note:: TuCluster is in early stages of development and not yet ready for production use.
         We are working towards a 0.1 release asap!
 
+.. image:: https://badge.fury.io/py/tucluster.svg
+    :target: https://badge.fury.io/py/tucluster
 
 .. image:: https://img.shields.io/travis/JamesRamm/tucluster.svg
         :target: https://travis-ci.org/JamesRamm/tucluster
