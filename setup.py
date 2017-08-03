@@ -13,7 +13,8 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     'falcon==1.2.0',
-    'mongoengine==0.13.0'
+    'mongoengine==0.13.0',
+    'gunicorn==19.7.1'
 ]
 
 dependency_links = [
