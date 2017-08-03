@@ -76,8 +76,8 @@ install tucluster on each of these nodes aswell!).
 You are now ready to start interacting with TuCluster
 
 
-Using ANUGA
------------
+Note on Using ANUGA
+-------------------
 
 Running python scripts on the server is potentially dangerous and you should ensure that your webserver
 runs as a non-root user and restrict its permissions. Essentially, the only place it needs to be able to write files
