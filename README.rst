@@ -10,8 +10,8 @@ HTTP API for managing and running Anuga and Tuflow models in the cloud or a loca
 .. image:: https://badge.fury.io/py/tucluster.svg
     :target: https://badge.fury.io/py/tucluster
 
-.. image:: https://img.shields.io/travis/JamesRamm/tucluster.svg
-        :target: https://travis-ci.org/JamesRamm/tucluster
+.. image:: https://img.shields.io/travis/openfloodmap/tucluster.svg
+        :target: https://travis-ci.org/openfloodmap/tucluster
 
 .. image:: https://codecov.io/gh/JamesRamm/tucluster/branch/master/graph/badge.svg
         :target: https://codecov.io/gh/JamesRamm/tucluster
@@ -20,8 +20,8 @@ HTTP API for managing and running Anuga and Tuflow models in the cloud or a loca
         :target: http://tucluster.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
-.. image:: https://pyup.io/repos/github/JamesRamm/tucluster/shield.svg
-     :target: https://pyup.io/repos/github/JamesRamm/tucluster/
+.. image:: https://pyup.io/repos/github/openfloodmap/tucluster/shield.svg
+     :target: https://pyup.io/repos/github/openfloodmap/tucluster/
      :alt: Updates
 
 Features
