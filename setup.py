@@ -18,7 +18,7 @@ requirements = [
 ]
 
 dependency_links = [
-    'git+https://github.com/JamesRamm/qflow#egg=qflow'
+    'git+https://github.com/openfloodmap/qflow#egg=qflow'
 ]
 
 setup_requirements = [
