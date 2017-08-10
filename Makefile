@@ -51,7 +51,7 @@ lint: ## check style with flake8
 	flake8 tucluster tests
 
 test: ## run tests quickly with the default Python
-	
+
 		python setup.py test
 
 test-all: ## run tests on every Python version with tox
@@ -85,3 +85,16 @@ dist: clean ## builds source and wheel package
 
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
+
+
+develop: clean ## Setup for development
+	python setup.py develop
+
+
+depends: develop ## Install mongodb and redis dependencies and setup
+	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+	echo "deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list	sudo apt-get update
+	sudo apt-get install -y mongodb-org
+	sudo service mongod start
+	sudo apt-get install redis-server
+
