@@ -1,0 +1,7 @@
+ {
+    "MONGODB": {
+        "db": "tucluster",
+        "host": "mongo",
+        "port": 27017
+    }
+}

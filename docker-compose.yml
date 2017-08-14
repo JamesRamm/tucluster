@@ -1,0 +1,37 @@
+version: "2"
+services:
+  tucluster:
+    build: .
+    volumes:
+     - .:/tucluster
+    environment:
+    - TUCLUSTER_CONFIG=tucluster_docker.json
+    depends_on:
+      - mongo
+      - redis
+    links:
+      - mongo
+      - redis
+    ports:
+      - "8000:8000"
+
+  redis:
+    image: "redis:alpine"
+
+  mongo:
+      image: mongo:latest
+      ports:
+          - "27017:27017"
+      command: mongod
+
+  qflow:
+    image: qflow
+    depends_on:
+      - redis
+    links:
+      - redis
+    volumes:
+     - .:/tucluster
+    environment:
+      - CELERY_CONFIG_MODULE=docker_celeryconfig
+      - PYTHONPATH=/tucluster
