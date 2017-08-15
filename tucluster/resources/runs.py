@@ -88,11 +88,15 @@ class ModelRunCollection(object):
         doc = json.load(req.bounded_stream)
         try:
             entry_point = doc['entrypoint']
+            send_email = doc.get('sendMail', True)
             engine = doc['engine']
             model = Model.objects.get(name=doc['modelName'])
             mock = doc.get('mock', False)
 
             # Start the task
+            email = None
+            if send_email and model.email:
+                email = model.email
             path = os.path.join(model.resolve_folder(), entry_point)
             if engine == 'tuflow':
                 task = tasks.run_tuflow.delay(
@@ -101,7 +105,7 @@ class ModelRunCollection(object):
                     mock=mock
                 )
             elif engine == 'anuga':
-                task = tasks.run_anuga.delay(path, env_name=settings['ANUGA_ENV'])
+                task = tasks.run_anuga.delay(path, env_name=settings['ANUGA_ENV'], email=email)
 
             # Create the model run
             run = self._document(

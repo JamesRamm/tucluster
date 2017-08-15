@@ -2,10 +2,13 @@ version: "2"
 services:
   tucluster:
     build: .
+    user: wwwuser
     volumes:
      - .:/tucluster
     environment:
     - TUCLUSTER_CONFIG=tucluster_docker.json
+    - CELERY_CONFIG_MODULE=docker_celeryconfig
+    - PYTHONPATH=/tucluster
     depends_on:
       - mongo
       - redis
@@ -17,6 +20,8 @@ services:
 
   redis:
     image: "redis:alpine"
+    ports:
+      - "6379:6379"
 
   mongo:
       image: mongo:latest
@@ -26,6 +31,7 @@ services:
 
   qflow:
     image: qflow
+    user: wwwuser
     depends_on:
       - redis
     links:
