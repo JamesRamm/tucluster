@@ -7,7 +7,7 @@ flake8==3.4.1
 coverage==4.4.2
 codecov==2.0.9
 Sphinx==1.6.5
-pytest==3.2.5
+pytest==3.3.2
 mongomock==3.8.0
 -e git+https://github.com/duncan-r/SHIP.git@tuflow_refactor#egg=ship
 
