@@ -5,7 +5,7 @@ wheel==0.30.0
 watchdog==0.8.3
 flake8==3.4.1
 coverage==4.4.2
-codecov==2.0.9
+codecov==2.0.15
 Sphinx==1.6.5
 pytest==3.2.5
 mongomock==3.8.0
