@@ -8,6 +8,6 @@ coverage==4.4.2
 codecov==2.0.9
 Sphinx==1.6.5
 pytest==3.2.5
-mongomock==3.8.0
+mongomock==3.11.1
 -e git+https://github.com/duncan-r/SHIP.git@tuflow_refactor#egg=ship
 
